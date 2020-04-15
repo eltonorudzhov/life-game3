@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ChaneState } from "./ChaneState";
 
 interface IProps {
   count: string;
@@ -7,7 +8,6 @@ interface IProps {
 export const CreateTabel = (props: IProps) => {
   const [table, setTable] = useState<number[]>([]);
   useEffect(() => {
-  
     setTable(new Array(+props.count).fill(0));
   }, [props.count]);
   //let ff: any =  new Array(props.count).fill(0)
@@ -28,7 +28,17 @@ export const CreateTabel = (props: IProps) => {
           return (
             <tr id={`tr${index}`}>
               {table.map((el: any, index: number) => {
-                return <td id={`td${index}`}></td>;
+                return (
+                  <td
+                    className={"die"}
+                    id={`td${index}`}
+                    onClick={(event) =>
+                      event.currentTarget.className == "die"
+                        ? (event.currentTarget.className = "alive")
+                        : (event.currentTarget.className = "die")
+                    }
+                  ></td>
+                );
               })}
             </tr>
           );
