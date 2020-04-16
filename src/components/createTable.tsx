@@ -1,49 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { ChaneState } from "./ChaneState";
 
 interface IProps {
   count: string;
 }
 
+interface IPoint {
+  color: string;
+  id: string;
+}
+
 export const CreateTabel = (props: IProps) => {
-  const [table, setTable] = useState<number[]>([]);
+  const [table, setTable] = useState<IPoint[][]>([[]]);
   useEffect(() => {
-    setTable(new Array(+props.count).fill(0));
+    const newTable = []
+    for (let i=0; i<+props.count; i++){
+      const rowTable = []
+      for (let j=0; j<+props.count; j++){
+        const a = {
+          color: 'die',
+          id: `td${i}${j}`
+        }
+        rowTable.push(a)
+      }
+        newTable.push( rowTable )
+    }
+    setTable(newTable);
   }, [props.count]);
-  //let ff: any =  new Array(props.count).fill(0)
-  //     let gameFill: any;
-
-  //   for (let j = 0; j < props.count; j++и) {
-  //     gameFill += <tr id={`tr${j}`}> </tr>;
-  //     for (let i = 0; i < props.count; i++) {
-  //       gameFill += <td id={`td${i}`}> </td>;
-  //     }
-
-  console.log("f");
 
   return (
-    <table>
-      <tbody>
-        {table.map((el: any, index: number) => {
-          return (
-            <tr id={`tr${index}`}>
-              {table.map((el: any, index: number) => {
-                return (
-                  <td
-                    className={"die"}
-                    id={`td${index}`}
-                    onClick={(event) =>
-                      event.currentTarget.className == "die"
-                        ? (event.currentTarget.className = "alive")
-                        : (event.currentTarget.className = "die")
-                    }
-                  ></td>
-                );
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <>
+    <button onClick={()=>console.log("")}>Ok</button>
+      <table >
+        <tbody >
+          {table.map((row: any, indexTr: number) => {
+            return (
+              <tr id={`tr${indexTr}`} >
+                {row.map((el: IPoint, index: number) => {
+                      
+                  return (
+                    <td
+                      key={el.id}
+                      className={el.color}
+                      id={el.id}
+                      onClick={
+                        (event) => {
+                          el.color =  el.color === 'alive' ? 'die' : 'alive'
+                          setTable(table.map((el)=>[...el]))
+                        }   
+                      }
+                    ></td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </>
   );
 };
