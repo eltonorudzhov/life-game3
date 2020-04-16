@@ -16,7 +16,8 @@ export const InputCount = () => {
           />
         </label>
       </form>
-      <CreateTabel count={count} />
+      
+      <CreateTabel count={+count>40? "40":count} />
     </>
   );
 };

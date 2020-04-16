@@ -15,6 +15,7 @@ interface IPoint {
 
 export const CreateTabel = (props: IProps) => {
   const [table, setTable] = useState<IPoint[][]>([[]]);
+  const [able, setAble] = useState(false)
   useEffect(() => {
     const newTable = [];
     for (let i = 0; i < +props.count; i++) {
@@ -30,25 +31,32 @@ export const CreateTabel = (props: IProps) => {
       newTable.push(rowTable);
     }
     setTable(newTable);
-  }, [props.count]); // useEffect(()=>)
-  let size: number
+  }, [props.count]); 
+
+  let size: number;
+  let historyCollection: [{ stepKey: string[] }] = [{ stepKey: ["", ""] }];
+
   const handleClick = async () => {
-    let historyCollection: [{stepKey: string[]}] = [{ stepKey: ["",""] }];
+    
     historyCollection = history(historyCollection, table);
-    size = 1
+    size = 1;
     historyCollection.shift();
-    while (checkEmpty(table) && (size===historyCollection.length)) {
+    while (checkEmpty(table) && size === historyCollection.length) {
       setTable(await startGame(table));
       historyCollection = history(historyCollection, table);
-      size++
+      size++;
     }
-    console.log("Конец игры")
+    console.log("Конец игры");
+    setAble(false)
+    historyCollection = [{ stepKey: ["", ""] }];
   };
 
   return (
     <>
       <button
+      disabled={able}
         onClick={async () => {
+          setAble(true)
           handleClick();
         }}
       >
