@@ -74,9 +74,11 @@ export const CreateTabel = (props: IProps) => {
                       className={el.color}
                       id={el.id}
                       onClick={(event) => {
+                        if (!able){
                         console.log(el);
                         el.color = el.color === "alive" ? "die" : "alive";
                         setTable(table.map((el) => [...el]));
+                        }
                       }}
                     ></td>
                   );
