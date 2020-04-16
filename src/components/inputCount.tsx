@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CreateTabel } from "./createTable";
+import { CreateTabel } from "./CreateTable";
 
 export const InputCount = () => {
   const [count, setCount] = useState("");

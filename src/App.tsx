@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { InputCount } from './components/inputCount';
+import { InputCount } from './components/InputCount';
 
 function App() {
   return (

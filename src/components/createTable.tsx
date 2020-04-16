@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import startGame from '../scripts/StartGame'
+import checkAround from '../scripts/CheckAround'
 
 interface IProps {
   count: string;
@@ -7,10 +9,12 @@ interface IProps {
 interface IPoint {
   color: string;
   id: string;
+  around: number;
 }
 
-export const CreateTabel = (props: IProps) => {
+export const CreateTabel = (props: IProps, arr?: IPoint[][]) => {
   const [table, setTable] = useState<IPoint[][]>([[]]);
+  
   useEffect(() => {
     const newTable = []
     for (let i=0; i<+props.count; i++){
@@ -18,7 +22,8 @@ export const CreateTabel = (props: IProps) => {
       for (let j=0; j<+props.count; j++){
         const a = {
           color: 'die',
-          id: `td${i}${j}`
+          id: `td${i}${j}`,
+          around: 0
         }
         rowTable.push(a)
       }
@@ -27,9 +32,14 @@ export const CreateTabel = (props: IProps) => {
     setTable(newTable);
   }, [props.count]);
 
+ // useEffect(()=>)
+
   return (
     <>
-    <button onClick={()=>console.log("")}>Ok</button>
+    <button onClick={async ()=>
+    
+     setTable(await startGame(table)) 
+    }>Ok</button>
       <table >
         <tbody >
           {table.map((row: any, indexTr: number) => {
@@ -44,6 +54,7 @@ export const CreateTabel = (props: IProps) => {
                       id={el.id}
                       onClick={
                         (event) => {
+                          console.log(el)
                           el.color =  el.color === 'alive' ? 'die' : 'alive'
                           setTable(table.map((el)=>[...el]))
                         }   
