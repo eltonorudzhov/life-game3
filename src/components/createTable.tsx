@@ -15,7 +15,7 @@ interface IPoint {
 
 export const CreateTabel = (props: IProps) => {
   const [table, setTable] = useState<IPoint[][]>([[]]);
-  const [able, setAble] = useState(false)
+  const [able, setAble] = useState(false);
   useEffect(() => {
     const newTable = [];
     for (let i = 0; i < +props.count; i++) {
@@ -31,13 +31,12 @@ export const CreateTabel = (props: IProps) => {
       newTable.push(rowTable);
     }
     setTable(newTable);
-  }, [props.count]); 
+  }, [props.count]);
 
   let size: number;
   let historyCollection: [{ stepKey: string[] }] = [{ stepKey: ["", ""] }];
 
   const handleClick = async () => {
-    
     historyCollection = history(historyCollection, table);
     size = 1;
     historyCollection.shift();
@@ -47,20 +46,36 @@ export const CreateTabel = (props: IProps) => {
       size++;
     }
     console.log("Конец игры");
-    setAble(false)
+    setAble(false);
+    
+    
     historyCollection = [{ stepKey: ["", ""] }];
   };
-
+  const clean = async () => { 
+    table.map((row)=>{
+      row.map((el)=> el.color='die')
+    })
+    setTable(table.map((el) => [...el]))
+  }
   return (
     <>
       <button
-      disabled={able}
+        disabled={able}
         onClick={async () => {
-          setAble(true)
+          setAble(true);
           handleClick();
         }}
       >
         Ok
+      </button>
+      <button
+        disabled={able}
+        onClick={ () => {
+          setAble(true);
+          clean();
+        }}
+      >
+        Clean
       </button>
       <table>
         <tbody>
@@ -74,10 +89,10 @@ export const CreateTabel = (props: IProps) => {
                       className={el.color}
                       id={el.id}
                       onClick={(event) => {
-                        if (!able){
-                        console.log(el);
-                        el.color = el.color === "alive" ? "die" : "alive";
-                        setTable(table.map((el) => [...el]));
+                        if (!able) {
+                          console.log(el);
+                          el.color = el.color === "alive" ? "die" : "alive";
+                          setTable(table.map((el) => [...el]));
                         }
                       }}
                     ></td>
