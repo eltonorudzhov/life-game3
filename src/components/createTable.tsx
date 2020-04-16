@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import startGame from '../scripts/StartGame'
-import checkAround from '../scripts/CheckAround'
+import checkEmpty from "../scripts/CheckEmpty";
 
 interface IProps {
   count: string;
@@ -33,12 +33,22 @@ export const CreateTabel = (props: IProps, arr?: IPoint[][]) => {
   }, [props.count]);
 
  // useEffect(()=>)
+ const handleClick = async () =>{
+   while (checkEmpty(table)){
+   setTable(await startGame(table)) 
+   }
+ }
+
+//  }
 
   return (
     <>
     <button onClick={async ()=>
-    
-     setTable(await startGame(table)) 
+    {
+        
+      handleClick()
+     
+    }
     }>Ok</button>
       <table >
         <tbody >
