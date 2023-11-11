@@ -1,9 +1,6 @@
-import checkAround from "./CheckAround";
-interface IPoint {
-  color: string;
-  id: string;
-  around: number;
-}
+import { CellState, CellType, SPEED } from "../utils/helpers";
+import checkNeighbors from "./checkNeighbors";
+
 /*
 в пустой (мёртвой) клетке, рядом с которой ровно три живые клетки, зарождается жизнь;
 
@@ -11,23 +8,24 @@ interface IPoint {
 в противном случае, если соседей меньше двух или больше трёх, 
 клетка умирает («от одиночества» или «от перенаселённости»)*/
 
-export default async function startGame(props: IPoint[][]): Promise<any> {
+export default async function startGame(props: CellType[][]): Promise<any> {
   let promise = new Promise((resolve, reject) => {
     setTimeout(() => {
-      props = checkAround(props);
-      console.log(props);
-      props.map((row) => {
-        row.map((el) => {
+      const _table = checkNeighbors(props);
+      _table.forEach((row) => {
+        row.forEach((el) => {
           if (
-            (el.color === "alive" && (el.around === 2 || el.around === 3)) ||
-            (el.color === "die" && el.around === 3)
-          )
-            el.color = "alive";
-          else el.color = "die";
+            (el.state === CellState.Alive && (el.aliveNeighbor === 2 || el.aliveNeighbor === 3)) ||
+            (el.state === CellState.Die && el.aliveNeighbor === 3)
+          ){
+            el.state = CellState.Alive;
+          } else {
+            el.state = CellState.Die
+          };
         });
       });
       resolve([...props]);
-    }, 1000);
+    }, SPEED);
   });
 
   let result = await promise;

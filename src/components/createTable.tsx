@@ -2,60 +2,43 @@ import React, { useState, useEffect } from "react";
 import startGame from "../scripts/StartGame";
 import checkEmpty from "../scripts/CheckEmpty";
 import history from "../scripts/History";
+import { CellState, CellType, getEmptyCell } from "../utils/helpers";
 
 interface IProps {
-  count: string;
+  size: number;
 }
+let historyCollection: { stepKey: number[] }[] = [];
 
-interface IPoint {
-  color: string;
-  id: string;
-  around: number;
-}
-
-export const CreateTabel = (props: IProps) => {
-  const [table, setTable] = useState<IPoint[][]>([[]]);
+export const CreateTable = (props: IProps) => {
+  const [table, setTable] = useState<CellType[][]>([[]]);
   const [able, setAble] = useState(false);
+  
   useEffect(() => {
-    const newTable = [];
-    for (let i = 0; i < +props.count; i++) {
-      const rowTable = [];
-      for (let j = 0; j < +props.count; j++) {
-        const a = {
-          color: "die",
-          id: `td${i}${j}`,
-          around: 0,
-        };
-        rowTable.push(a);
-      }
-      newTable.push(rowTable);
-    }
+      const newTable = Array.from({ length: props.size }).map((row, rowIndex) => { 
+      const _newRow = Array.from({ length: props.size });
+      return _newRow.map((cell, cellIndex)=> getEmptyCell(`td${rowIndex}${cellIndex}`))
+    })
+   
     setTable(newTable);
-  }, [props.count]);
+  }, [props.size]);
 
-  let size: number;
-  let historyCollection: [{ stepKey: string[] }] = [{ stepKey: ["", ""] }];
 
   const handleClick = async () => {
-    historyCollection = history(historyCollection, table);
-    size = 1;
-    historyCollection.shift();
-    while (checkEmpty(table) && size === historyCollection.length) {
+    let count = 0;
+    while (checkEmpty(table) && count === historyCollection.length) {
       setTable(await startGame(table));
       historyCollection = history(historyCollection, table);
-      size++;
-    }
-    console.log("Конец игры");
+      count++;
+    } 
     setAble(false);
-    
-    
-    historyCollection = [{ stepKey: ["", ""] }];
+    historyCollection = [];
+    console.log("Конец игры");
   };
-  const clean = async () => { 
-    table.map((row)=>{
-      row.map((el)=> el.color='die')
-    })
-    setTable(table.map((el) => [...el]))
+  const clean = () => { 
+    setTable(table.map((row) => row.map(cell=> {
+      cell.state = CellState.Die
+      return cell
+    })))
   }
   return (
     <>
@@ -71,7 +54,7 @@ export const CreateTabel = (props: IProps) => {
       <button
         disabled={able}
         onClick={ () => {
-          setAble(true);
+          setAble(false);
           clean();
         }}
       >
@@ -81,17 +64,16 @@ export const CreateTabel = (props: IProps) => {
         <tbody>
           {table.map((row: any, indexTr: number) => {
             return (
-              <tr id={`tr${indexTr}`}>
-                {row.map((el: IPoint, index: number) => {
+              <tr key={`tr${indexTr}`} id={`tr${indexTr}`}>
+                {row.map((el: CellType, index: number) => {
                   return (
                     <td
                       key={el.id}
-                      className={el.color}
+                      className={`color_${el.state}`}
                       id={el.id}
                       onClick={(event) => {
                         if (!able) {
-                          console.log(el);
-                          el.color = el.color === "alive" ? "die" : "alive";
+                          el.state = +!el.state;
                           setTable(table.map((el) => [...el]));
                         }
                       }}

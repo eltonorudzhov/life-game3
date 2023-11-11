@@ -1,33 +1,29 @@
-interface IPoint {
-  color: string;
-  id: string;
-  around: number;
-}
-
+import { CellType } from "../utils/helpers";
 
 export default function history(
-  historyCollection: [{stepKey: string[]}],
-  
-  table: IPoint[][]
-):  [{stepKey: string[]}]{
-  let tmp: string[] = [];
-  
-let count = 0
+  historyCollection: {stepKey: number[]}[],
+  table: CellType[][]
+):  {stepKey: number[]}[]{
+  let tmp: number[] = [];
+  let hasDifference = false;
   table.map((row) => {
-    row.map((el) => {
-      tmp.push(el.color);
-    });
+      row.map((el) => {
+        tmp.push(el.state);
+      });
   });
-  historyCollection.map((el)=>{
-      for (let i=0; i<el.stepKey.length; i++)
-          if (el.stepKey[i]!==tmp[i]){
-                       count++
-            return
-          }
-      })
-  console.log(count)
-  if (count===historyCollection.length)
-  historyCollection.push({ stepKey: tmp });
-  console.log(historyCollection)
+  if (historyCollection.length){
+    const lastCollection = historyCollection[historyCollection.length - 1];
+    for (let i=0; i<lastCollection.stepKey.length; i++){
+      if (lastCollection.stepKey[i] !== tmp[i]){
+        hasDifference = true
+        break;
+      }
+    }     
+  } else {
+    hasDifference = true;
+  }
+  if (hasDifference){
+    historyCollection.push({ stepKey: tmp });
+  }
   return historyCollection;
 }

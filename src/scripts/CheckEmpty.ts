@@ -1,19 +1,7 @@
-interface IPoint {
-  color: string;
-  id: string;
-  around: number;
-}
+import { CellState, CellType } from "../utils/helpers";
 
-export default function checkEmpty(table: IPoint[][]): Boolean {
-  let flg = 0;
-  table.map((row) => {
-    row.map((el) => {
-      if (el.color === "alive") {
-        flg = 1;
-        return true;
-      }
-    });
+export default function checkEmpty(table: CellType[][]): Boolean {
+  return !table.find((row) => {
+    return row.find(item=> item.state === CellState.Alive);
   });
-  if (flg) return true;
-  else return false;
 }
